@@ -1,0 +1,11 @@
+https://graph.microsoft.com/v1.0/me/drive/root/children
+
+https://graph.microsoft.com/v1.0/me/drive/items/
+
+/drive/root/children
+
+9740C08F196883E9!50117
+
+/drive/items/9740C08F196883E9!50117
+
+/drive/root:/Bilder/Eigene Aufnahmen:/children
