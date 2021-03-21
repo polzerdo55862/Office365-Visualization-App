@@ -1,6 +1,11 @@
 {% extends "tutorial/layout.html" %}
 {% block content %}
 <h1>Pictures uploaded to One Drive</h1>
+
+{% autoescape off %}
+{{ plot_div }}
+{% endautoescape %}
+
 <table class="table">
   <thead>
     <tr>

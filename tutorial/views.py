@@ -106,6 +106,7 @@ def calendar(request):
 
 
 # </CalendarViewSnippet>
+import plotly.express as px
 
 def one_drive(request):
     context = initialize_context(request)
@@ -116,26 +117,26 @@ def one_drive(request):
 
     for file in files['value']:
         file['DownloadUrl'] = file['@microsoft.graph.downloadUrl']
-        file['CreationDay'] = datetime.datetime.strptime(file['createdDateTime'], '%Y-%m-%dT%H:%M:%S.%fZ').date()
+        # file['CreationDay'] = datetime.datetime.strptime(file['createdDateTime'], '%Y-%m-%dT%H:%M:%S.%fZ').date()
+        file['CreationWeek'] = str(file['CreationDay'].isocalendar()[1]) + '-' + \
+                                str(file['CreationDay'].year)
 
+    # sum all items by calendar week
     items_df = pd.DataFrame.from_dict(files['value'])
-    items_df = items_df['createdDateTime'].groupby(by="CreationDay", dropna=False).count()
-    items_df.to_csv("./dataframe.csv")
+    items_df = items_df.groupby(by="CreationWeek", dropna=False).count()
+    items_df.rename(columns={'createdDateTime': 'count'}, inplace=True)
 
+    # define new figure with plotly
+    fig = px.bar(x=items_df.index.tolist(),
+                     y=items_df['count'].tolist(),
+                     labels=dict(x="Calendar Week", y="Number of umploaded pictures")
+                     )
+
+    # graph plot
+    plt_div = plot(fig, output_type='div')
+
+    # define context
     context['files'] = files['value']
-    import pdb;pdb.set_trace()
+    context['plot_div'] = plt_div
 
-    # fig = go.Figure()
-    #
-    # fig.add_trace(go.Bar(
-    #     x=xaxis_target,
-    #     y=yaxis_target,
-    #     name='Target [h]: ' + " - " + str(round(sum(yaxis_target), 2)) + " h",
-    #     marker_color='lightsalmon'
-    # ))
-    #
-    # # Here we modify the tickangle of the xaxis, resulting in rotated labels.
-    # fig.update_layout(barmode='group', xaxis_tickangle=-45)
-    # fig.update_xaxes(type='category')
-    # plt_div = plot(fig, output_type='div')
     return render(request, 'tutorial/one_drive.html', context)
