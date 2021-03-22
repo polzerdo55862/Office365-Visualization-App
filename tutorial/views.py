@@ -117,9 +117,8 @@ def one_drive(request):
 
     for file in files['value']:
         file['DownloadUrl'] = file['@microsoft.graph.downloadUrl']
-        # file['CreationDay'] = datetime.datetime.strptime(file['createdDateTime'], '%Y-%m-%dT%H:%M:%S.%fZ').date()
-        file['CreationWeek'] = str(file['CreationDay'].isocalendar()[1]) + '-' + \
-                                str(file['CreationDay'].year)
+        file['CreationDay'] = datetime.datetime.strptime(file['createdDateTime'], '%Y-%m-%dT%H:%M:%S.%fZ').date()
+        file['CreationWeek'] = str(file['CreationDay'].isocalendar()[1]) + '-' + str(file['CreationDay'].year)
 
     # sum all items by calendar week
     items_df = pd.DataFrame.from_dict(files['value'])
